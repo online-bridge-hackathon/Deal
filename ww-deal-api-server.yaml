@@ -1,0 +1,160 @@
+openapi: 3.0.2
+info:
+  x-logo:
+    url: "logo.png"
+    backgroundColor: "#FFFFFF"
+    altText: "LOGO"
+  description: |
+    # Introduction
+    A web service that accepts request by APIs and returns 1+ bridge deals
+
+    # OpenAPI Specification
+    This API is documented in **OpenAPI format**
+
+    # Cross-Origin Resource Sharing
+    This API features Cross-Origin Resource Sharing (CORS) implemented in compliance with  [W3C spec](https://www.w3.org/TR/cors/).
+    And that allows cross-domain communication from the browser.
+    All responses have a wildcard same-origin which makes them completely public and accessible to everyone, including any code on any site.
+
+    # Authentication
+
+    Forms of authentication:
+      - API Key
+  title: Deal
+  version: 0.0.1
+  termsOfService: http://example.com/terms/
+  contact:
+    name: API Support
+    email: support@example.com
+    url: http://example.com/support
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+externalDocs:
+  description: Full Spec
+  url: openapi.yaml
+servers:
+  - description: dev
+    url: https://.hackathon.globalbridge.app/
+tags:
+  - name: Deal
+    description: Deal related operations
+components:
+  parameters:
+    seed:
+      description: Seed
+      in: query
+      name: seed
+      schema:
+        format: byte
+        type: string
+    session:
+      description: Session number
+      in: query
+      name: session
+      schema:
+        default: 1
+        type: integer
+    event:
+      description: Event number
+      in: query
+      name: event
+      schema:
+        default: 1
+        type: integer
+    firstBoard:
+      description: First board number
+      in: query
+      name: firstBoard
+      schema:
+        default: 1
+        type: integer
+    numberOfBoards:
+      description: Number of Boards
+      in: query
+      name: numberOfBoards
+      schema:
+        default: 32
+        type: integer
+  responses:
+    Default:
+      description: Unexpected Error
+      content:
+        application/json:
+          schema:
+            "$ref": "#/components/schemas/Error"
+    NotFound:
+      description: The specified resource was not found
+      content:
+        application/json:
+          schema:
+            "$ref": "#/components/schemas/Error"
+    Success:
+      description: Success
+      content:
+        application/json:
+          schema:
+            "$ref": "#/components/schemas/Success"
+    BoardList:
+      description: Board List response
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/BoardList"
+  schemas:
+    Error:
+      description: Default Error Response Container
+      properties:
+        code:
+          format: int32
+          type: integer
+        message:
+          type: string
+      required:
+      - code
+      - message
+      type: object
+    Success:
+      description: Success
+      properties:
+        code:
+          type: integer
+        message:
+          type: string
+      required:
+      - code
+      - message
+      type: object
+    BoardList:
+      description: Board array, uuid hands
+      properties:
+        boards: 
+          type: array
+          items: 
+            type: string
+            format: uuid
+paths:
+  /api/deal:
+    get:
+      operationId: getDeal 
+      parameters:
+        - $ref: '#/components/parameters/seed'
+        - $ref: '#/components/parameters/session'
+        - $ref: '#/components/parameters/event'
+        - $ref: '#/components/parameters/firstBoard'
+        - $ref: '#/components/parameters/numberOfBoards'
+      responses:
+        '200':
+           "$ref": "#/components/responses/BoardList"
+        '400':
+          "$ref": "#/components/responses/NotFound"
+        '500':
+          "$ref": "#/components/responses/Default"
+        default:
+          "$ref": "#/components/responses/Default"
+      summary: Returns an array of bridge hands
+      tags: 
+        - Deal
+      x-codeSamples:
+        lang: curl
+        source: 'curl --header "Content-Type: application/json\" --request GET https://.hackathon.globalbridge.app/'

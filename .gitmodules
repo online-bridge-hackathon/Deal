@@ -1,0 +1,3 @@
+[submodule "ww-deal"]
+	path = ww-deal
+	url = git@github.com:woefulwabbit/ww-deal.git
