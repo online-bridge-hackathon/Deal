@@ -5,16 +5,15 @@ RUN apt-get install -y \
   git \
   build-essential \
   cmake
-  
-RUN mkdir -p /app
 
-RUN git clone https://github.com/online-bridge-hackathon/Deal.git /app && \
-  cd /app && \
-  mkdir /build && \
-  cd build && \
-  cmake .. && \
+RUN git clone https://github.com/online-bridge-hackathon/Deal.git && \
+  cd /Deal 
+  
+WORKDIR /Deal
+
+RUN git clone https://github.com/woefulwabbit/ww-deal.git
+
+RUN cmake . && \
   make
 
-WORKDIR /app
-
-RUN server/api-server
+RUN Deal/server/api-server
