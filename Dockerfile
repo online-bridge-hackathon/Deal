@@ -10,8 +10,7 @@ RUN mkdir -p /app
 
 RUN git clone https://github.com/online-bridge-hackathon/Deal.git /app && \
   cd /app && \
-
-RUN mkdir /build && \
+  mkdir /build && \
   cd build && \
   cmake .. && \
   make
