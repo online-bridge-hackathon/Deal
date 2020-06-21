@@ -18,14 +18,14 @@ push:
 	docker push ${DOCKER_TAG}
 
 deploy: set_gcp_context ensure_ns
-	helm upgrade --install dds-api ./chart \
+	helm upgrade --install deal-api ./chart \
 		--set image="${DOCKER_TAG}" \
 		--set externalHostname="${EXTERNAL_ADDRES}" \
 		--namespace ${DDS_K8S_NS} \
 		--history-max=10
 
 uninstall: set_gcp_context
-	helm del dds-api --namespace ${DDS_K8S_NS}
+	helm del deal-api --namespace ${DDS_K8S_NS}
 
 set_gcp_context:
 	gcloud container clusters get-credentials ${GKE_CLUSTER_NAME} --zone ${GKE_ZONE} --project ${GCP_PROJECT}
