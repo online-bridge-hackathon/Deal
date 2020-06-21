@@ -16,4 +16,6 @@ RUN git clone https://github.com/woefulwabbit/ww-deal.git
 RUN cmake . && \
   make
 
-RUN Deal/server/api-server
+WORKDIR /Deal/server
+
+CMD ./api-server
