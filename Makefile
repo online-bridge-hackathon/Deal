@@ -4,7 +4,7 @@ DOCKER_TAG=${DOCKER_REPO}/deal-api:${VERSION}
 
 EXTERNAL_ADDRES ?= deal.hackathon.globalbridge.app
 
-DDS_K8S_NS ?= deal-api
+DDS_K8S_NS ?= development
 GCP_PROJECT ?= online-bridge-hackathon-2020
 GKE_CLUSTER_NAME ?= hackathon-cluster
 GKE_ZONE ?= europe-west3-b
@@ -22,7 +22,7 @@ deploy: set_gcp_context ensure_ns
 		--set image="${DOCKER_TAG}" \
 		--set externalHostname="${EXTERNAL_ADDRES}" \
 		--namespace ${DDS_K8S_NS} \
-		--history-max=10
+#		--history-max=10
 
 uninstall: set_gcp_context
 	helm del deal-api --namespace ${DDS_K8S_NS}
