@@ -6,7 +6,7 @@ RUN apt-get install -y \
   build-essential \
   cmake
 
-RUN git clone https://github.com/online-bridge-hackathon/Deal.git && \
+RUN git clone -b test-dev https://github.com/online-bridge-hackathon/Deal.git && \
   cd /Deal 
   
 WORKDIR /Deal
