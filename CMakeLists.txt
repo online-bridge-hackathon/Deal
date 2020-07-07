@@ -6,6 +6,18 @@ endif ()
 
 project (ww-deal-server)
 
+find_package(Pistache 0.0.2)
+find_package(nlohmann_json)
+if (NOT Pistache_FOUND)
+    add_subdirectory(${CMAKE_SOURCE_DIR}/pistache)
+endif ()
+if (NOT nlohmann_json_FOUND)
+    if (NOT DEFINED JSON_BuildTests)
+        set(JSON_BuildTests OFF)
+    endif ()
+    add_subdirectory(json)
+endif ()
+
 include(GNUInstallDirs)
 
 add_subdirectory(server)

@@ -3,6 +3,7 @@ A web service that accepts request by APIs and returns 1+ bridge deals
 
 # Build
 ```
+git submodule update --init
 mkdir build
 cd build
 cmake ..
