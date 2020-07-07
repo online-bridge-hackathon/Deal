@@ -6,5 +6,12 @@ endif ()
 
 project (ww-deal-server)
 
+include(GNUInstallDirs)
+
 add_subdirectory(server)
 add_subdirectory(ww-deal)
+
+install(TARGETS api-server
+    RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+    COMPONENT Runtime
+    )
