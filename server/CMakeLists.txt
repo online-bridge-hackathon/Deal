@@ -10,20 +10,20 @@ find_package(Threads)
 
 include(ExternalProject)
 
-set(EXTERNAL_INSTALL_LOCATION ${CMAKE_CURRENT_SOURCE_DIR}/external)
-
 ExternalProject_Add(PISTACHE
     GIT_REPOSITORY https://github.com/oktal/pistache.git
-    CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${EXTERNAL_INSTALL_LOCATION}
+    CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${CMAKE_INSTALL_PREFIX}
+        -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}
 )
 
 ExternalProject_Add(NLOHMANN
     GIT_REPOSITORY https://github.com/nlohmann/json.git
-    CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${EXTERNAL_INSTALL_LOCATION} -DJSON_BuildTests=Off
+    BINARY_DIR NLOHMANN-prefix/build
+    CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${CMAKE_INSTALL_PREFIX}
+        -DJSON_BuildTests=Off
+        -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}
 
 )
-include_directories(${EXTERNAL_INSTALL_LOCATION}/include)
-link_directories(${EXTERNAL_INSTALL_LOCATION}/lib)
 
 file(GLOB SRCS
     ${CMAKE_CURRENT_SOURCE_DIR}/api/*.cpp
@@ -34,5 +34,11 @@ file(GLOB SRCS
 
 add_executable(${PROJECT_NAME} ${SRCS} )
 target_include_directories(${PROJECT_NAME} PRIVATE model api impl)
+
+target_include_directories(${PROJECT_NAME} PRIVATE ${CMAKE_INSTALL_PREFIX}/include)
+target_link_directories(${PROJECT_NAME} PRIVATE ${CMAKE_INSTALL_PREFIX}/lib)
+
+set_target_properties(${PROJECT_NAME} PROPERTIES INSTALL_RPATH ${CMAKE_INSTALL_PREFIX}/lib)
+
 add_dependencies(${PROJECT_NAME} PISTACHE NLOHMANN)
 target_link_libraries(${PROJECT_NAME} pistache Threads::Threads wwdeal)
