@@ -17,10 +17,13 @@ all: build
 
 release: push
 
-build:
+.dockerignore: .gitignore
+	sed 's#^[^/]#**/\0#' < $< > $@
+
+build: .dockerignore
 	docker build -t ${DEV_DOCKER_TAG} .
 
-build-release:
+build-release: .dockerignore
 	docker build -t ${DOCKER_TAG} "${GIT_REPO}#${VERSION}"
 
 push: build-release
