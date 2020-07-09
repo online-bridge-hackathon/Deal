@@ -1,0 +1,4 @@
+apiVersion: v1
+description: A helm chart for Deal API
+name: deal
+version: 0.1.0
