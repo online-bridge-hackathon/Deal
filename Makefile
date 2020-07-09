@@ -29,7 +29,8 @@ deploy: set_gcp_context ensure_ns
 		--history-max=10
 
 uninstall: set_gcp_context
-	helm del ${RELEASE_NAME} --namespace ${K8S_NS}
+	@echo Warning: Are you sure you want to delete this Production service ${RELEASE_NAME} [N/y]
+	read answer; [ "x$$answer" = "xy" ] && helm del ${RELEASE_NAME} --namespace ${K8S_NS}
 
 set_gcp_context:
 	gcloud container clusters get-credentials ${GKE_CLUSTER_NAME} --zone ${GKE_ZONE} --project ${GCP_PROJECT}
