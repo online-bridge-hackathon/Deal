@@ -70,6 +70,8 @@ void DealApiImpl::get_deal(const Pistache::Optional<std::string> &seed, const Pi
       deals.push_back(std::string(uuid));
    }
 
+   // ACCESS CONTROL ALLOW ORIGIN (CORS)
+   response.headers().template add<Pistache::Http::Header::AccessControlAllowOrigin>("*");
    response.send(Pistache::Http::Code::Ok, deals.dump(), MIME(Application, Json));
 }
 
