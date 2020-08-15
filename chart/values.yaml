@@ -1,0 +1,5 @@
+image: gcr.io/globalbridge-app/deal
+replicas: 1
+externalHostname: deal.prod.globalbridge.app
+tlsSecret: deal-tls-secret
+targetPort: 8080

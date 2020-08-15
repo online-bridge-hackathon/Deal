@@ -1,34 +1,39 @@
-DOCKER_REPO ?= gcr.io/online-bridge-hackathon-2020
+# Project / Org
+GCP_PROJECT ?= globalbridge-app
+GKE_ZONE ?= europe-west4-b
+
+# Service / App
+GKE_CLUSTER_NAME ?= prod-cluster
+RELEASE_NAME ?= deal
+K8S_NS ?= prod-${RELEASE_NAME}
+EXTERNAL_ADDRESS ?= ${RELEASE_NAME}.prod.globalbridge.app
+
+# Docker Config
+DOCKER_REPO ?= gcr.io/${GCP_PROJECT}
 VERSION ?= $(shell cat VERSION)
-DOCKER_TAG=${DOCKER_REPO}/deal-api:${VERSION}
-
-EXTERNAL_ADDRES ?= deal.hackathon.globalbridge.app
-
-DDS_K8S_NS ?= deal-api
-GCP_PROJECT ?= online-bridge-hackathon-2020
-GKE_CLUSTER_NAME ?= hackathon-cluster
-GKE_ZONE ?= europe-west3-b
+DOCKER_TAG = ${DOCKER_REPO}/${RELEASE_NAME}:${VERSION}
 
 release: build push
 
-build:
+build: 
 	docker build -t ${DOCKER_TAG} .
 
 push:
 	docker push ${DOCKER_TAG}
 
 deploy: set_gcp_context ensure_ns
-	helm upgrade --install deal-api ./chart \
+	helm upgrade --install ${RELEASE_NAME} ./chart \
 		--set image="${DOCKER_TAG}" \
-		--set externalHostname="${EXTERNAL_ADDRES}" \
-		--namespace ${DDS_K8S_NS} \
+		--set externalHostname="${EXTERNAL_ADDRESS}" \
+		--namespace ${K8S_NS} \
 		--history-max=10
 
 uninstall: set_gcp_context
-	helm del deal-api --namespace ${DDS_K8S_NS}
+	@echo Warning: Are you sure you want to delete this Production service ${RELEASE_NAME} [N/y]
+	read answer; [ "x$$answer" = "xy" ] && helm del ${RELEASE_NAME} --namespace ${K8S_NS}
 
 set_gcp_context:
 	gcloud container clusters get-credentials ${GKE_CLUSTER_NAME} --zone ${GKE_ZONE} --project ${GCP_PROJECT}
 
 ensure_ns:
-	kubectl create ns ${DDS_K8S_NS} || :
+	kubectl create ns ${K8S_NS} || :

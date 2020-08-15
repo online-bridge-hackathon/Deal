@@ -1,0 +1,60 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-deployment
+  labels:
+    app: {{ .Release.Name }}
+spec:
+  replicas: {{ int .Values.replicas }}
+  selector:
+    matchLabels:
+      app: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Release.Name }}
+    spec:
+      containers:
+      - name: {{ .Release.Name }}-api
+        image: {{ .Values.image }}
+        imagePullPolicy: Always
+        ports:
+          - containerPort: {{ .Values.targetPort }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Release.Name }}-service
+spec:
+  selector:
+    app: {{ .Release.Name }}
+  ports:
+  - port: 80
+    targetPort: {{ .Values.targetPort }}
+    protocol: TCP
+    name: http
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+    cert-manager.io/cluster-issuer: letsencrypt-production
+  labels:
+    app: {{ .Release.Name }}
+  name: {{ .Release.Name }}-ingress
+spec:
+  tls:
+  - hosts:
+    - {{ .Values.externalHostname }}
+    secretName: {{ .Values.tlsSecret }}
+  rules:
+  - host: "{{ .Values.externalHostname }}"
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: {{ .Release.Name }}-service
+          servicePort: 80
