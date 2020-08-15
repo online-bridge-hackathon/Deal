@@ -1,3 +1,12 @@
 [submodule "ww-deal"]
 	path = ww-deal
-	url = git@github.com:woefulwabbit/ww-deal.git
+	url = ../../woefulwabbit/ww-deal.git
+	branch = master
+[submodule "pistache"]
+	path = pistache
+	url = ../../oktal/pistache.git
+	branch = master
+[submodule "json"]
+	path = json
+	url = ../../nlohmann/json.git
+	branch = master

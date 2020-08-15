@@ -8,6 +8,7 @@ curl https://deal.prod.globalbridge.app/api/deal
 
 ## Build
 ```
+git submodule update --init
 mkdir build
 cd build
 cmake ..
